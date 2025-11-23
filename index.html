@@ -703,6 +703,71 @@
   padding-bottom: 14px !important;
 }
 
+/* ===== 國家選單（跟免費安裝同形狀、深底半透明） ===== */
+.install-row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.install-btn{
+  flex:1;          /* 讓免費安裝變短，留空間給右邊 */
+  min-width:0;
+}
+
+.country-select-wrap{
+  position:relative;
+  flex-shrink:0;
+}
+
+.country-btn{
+  width:auto;
+  padding:10px 14px;
+  border-radius:999px;
+  background: rgba(255,255,255,0.06);  /* 接近深底色的半透明 */
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.10);
+  font-size:15px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.country-btn .caret{
+  font-size:12px;
+  opacity:0.8;
+}
+
+/* 下拉選單 */
+.country-menu{
+  position:absolute;
+  top:calc(100% + 8px);
+  right:0;
+  min-width:150px;
+  background:#101018;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.8);
+  display:none;
+  overflow:hidden;
+  z-index:50;
+}
+
+.country-menu.show{ display:block; }
+
+.country-item{
+  padding:10px 12px;
+  font-size:14px;
+  cursor:pointer;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.country-item:hover{
+  background:rgba(255,255,255,0.06);
+}
+
 </style>
 </head>
 <body>
@@ -716,16 +781,29 @@
         <div class="app-main-info">
           <div class="app-title">OFA168</div>
           <div class="app-subtitle">高品質遊戲體驗，立即安裝</div>
-          <div class="btn-row">
-            <button class="btn btn-primary" id="install-btn">免費安裝</button>
-          </div>
+          <div class="btn-row install-row">
+  <button class="btn btn-primary install-btn" id="install-btn">免費安裝</button>
+
+  <div class="country-select-wrap">
+    <button class="btn country-btn" id="countryBtn" type="button">
+      <span id="countryFlag">🇭🇰</span>
+      <span class="caret">▾</span>
+    </button>
+
+    <div class="country-menu" id="countryMenu">
+      <div class="country-item" data-value="hk">🇭🇰 香港</div>
+      <div class="country-item" data-value="my">🇲🇾 馬來西亞</div>
+      <div class="country-item" data-value="kh">🇰🇭 柬埔寨</div>
+    </div>
+  </div>
+</div>
         </div>
       </div>
 
 <!-- 中間統計數據（App Store 風格） -->
 <div class="stats-row" id="statsRow">
   <div class="stats-col">
-    <div class="stats-top" data-key="ratingsCountTop">10088個評分</div>
+    <div class="stats-top" data-key="ratingsCountTop">2.3萬則評分</div>
     <div class="stats-big" data-key="ratingValue">4.9</div>
     <div class="stats-bottom stars" data-key="starsText">★★★★★</div>
   </div>
@@ -1023,10 +1101,39 @@
   </div>
 
 <script>
-  const INSTALL_URL = "/pwa/";  // ← 你要跳轉的網址
+<script>
+  const INSTALL_URLS = {
+    hk: "/pwa/index.html",
+    my: "/pwa/indexmy.html",
+    kh: "/pwa/indexkh.html"
+  };
+
+  let currentCountry = "hk"; // 預設香港
 
   const btn = document.getElementById('install-btn');
+  const countryBtn = document.getElementById('countryBtn');
+  const countryMenu = document.getElementById('countryMenu');
+  const countryFlag = document.getElementById('countryFlag');
 
+  // 開關選單
+  countryBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    countryMenu.classList.toggle('show');
+  });
+
+  // 點選項
+  countryMenu.querySelectorAll('.country-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      currentCountry = item.dataset.value;
+      countryFlag.textContent = item.textContent.trim().split(" ")[0]; // 只顯示國旗
+      countryMenu.classList.remove('show');
+    });
+  });
+
+  // 點外面關閉
+  document.addEventListener('click', ()=> countryMenu.classList.remove('show'));
+
+  // 免費安裝（維持你原本：轉圈 + 2 秒後跳）
   btn.addEventListener('click', () => {
     if (btn.classList.contains('loading')) return;
 
@@ -1034,7 +1141,10 @@
     btn.textContent = "安裝中…";
 
     setTimeout(() => {
-      window.location.href = INSTALL_URL;
+      window.location.href = INSTALL_URLS[currentCountry] || INSTALL_URLS.hk;
+    }, 2000);
+  });
+</script>
     }, 2000);
   });
 </script>
