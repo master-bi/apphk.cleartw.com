@@ -703,70 +703,68 @@
   padding-bottom: 14px !important;
 }
 
-/* ===== 國家選單（跟免費安裝同形狀、深底半透明） ===== */
-.install-row{
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
 
-.install-btn{
-  flex:1;          /* 讓免費安裝變短，留空間給右邊 */
-  min-width:0;
-}
+    /* ===== 安裝按鈕 + 國家下拉（只新增，不影響其它） ===== */
+    .install-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top: 2px;
+    }
+    .install-row .btn-primary{
+      flex: 1;              /* 讓左邊變短，右邊留給國旗 */
+      min-width: 0;
+    }
 
-.country-select-wrap{
-  position:relative;
-  flex-shrink:0;
-}
+    .region-select{
+      position: relative;
+      flex-shrink: 0;
+    }
+    .btn-region{
+      width: 70px;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06); /* 接近底色的半透明 */
+      color:#fff;
+      font-size: 18px;
+      font-weight: 600;
+      cursor:pointer;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.55) inset, 0 4px 10px rgba(0,0,0,0.6);
+      backdrop-filter: none; /* 不用玻璃套件 */
+    }
+    .btn-region:active{ transform: translateY(1px); }
 
-.country-btn{
-  width:auto;
-  padding:10px 14px;
-  border-radius:999px;
-  background: rgba(255,255,255,0.06);  /* 接近深底色的半透明 */
-  color:#fff;
-  border:1px solid rgba(255,255,255,0.10);
-  font-size:15px;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
+    .region-menu{
+      position:absolute;
+      top: calc(100% + 8px);
+      right:0;
+      width: 170px;
+      background: #0f0f16;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+      padding: 6px;
+      display:none;
+      z-index: 50;
+    }
+    .region-select.open .region-menu{ display:block; }
 
-.country-btn .caret{
-  font-size:12px;
-  opacity:0.8;
-}
-
-/* 下拉選單 */
-.country-menu{
-  position:absolute;
-  top:calc(100% + 8px);
-  right:0;
-  min-width:150px;
-  background:#101018;
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:14px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.8);
-  display:none;
-  overflow:hidden;
-  z-index:50;
-}
-
-.country-menu.show{ display:block; }
-
-.country-item{
-  padding:10px 12px;
-  font-size:14px;
-  cursor:pointer;
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.country-item:hover{
-  background:rgba(255,255,255,0.06);
-}
+    .region-option{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      color:#e9ecf6;
+      cursor:pointer;
+      user-select:none;
+    }
+    .region-option:hover{
+      background: rgba(255,255,255,0.06);
+    }
+    .region-option .flag{ font-size: 18px; }
 
 </style>
 </head>
@@ -781,29 +779,35 @@
         <div class="app-main-info">
           <div class="app-title">OFA168</div>
           <div class="app-subtitle">高品質遊戲體驗，立即安裝</div>
-          <div class="btn-row install-row">
-  <button class="btn btn-primary install-btn" id="install-btn">免費安裝</button>
+          <div class="btn-row">
+            <div class="install-row">
+              <button class="btn btn-primary" id="install-btn">免費安裝</button>
 
-  <div class="country-select-wrap">
-    <button class="btn country-btn" id="countryBtn" type="button">
-      <span id="countryFlag">🇭🇰</span>
-      <span class="caret">▾</span>
-    </button>
-
-    <div class="country-menu" id="countryMenu">
-      <div class="country-item" data-value="hk">🇭🇰 香港</div>
-      <div class="country-item" data-value="my">🇲🇾 馬來西亞</div>
-      <div class="country-item" data-value="kh">🇰🇭 柬埔寨</div>
-    </div>
-  </div>
-</div>
+              <div class="region-select" id="regionSelect">
+                <button class="btn btn-region" id="regionBtn" aria-haspopup="listbox" aria-expanded="false">
+                  <span id="regionFlag">🇭🇰</span>
+                </button>
+                <div class="region-menu" id="regionMenu" role="listbox" aria-label="選擇地區">
+                  <div class="region-option" data-region="hk" data-url="/pwa/index.html">
+                    <span class="flag">🇭🇰</span><span class="name">香港</span>
+                  </div>
+                  <div class="region-option" data-region="my" data-url="/pwa/indexmy.html">
+                    <span class="flag">🇲🇾</span><span class="name">馬來西亞</span>
+                  </div>
+                  <div class="region-option" data-region="kh" data-url="/pwa/indexkh.html">
+                    <span class="flag">🇰🇭</span><span class="name">柬埔寨</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
 <!-- 中間統計數據（App Store 風格） -->
 <div class="stats-row" id="statsRow">
   <div class="stats-col">
-    <div class="stats-top" data-key="ratingsCountTop">2.3萬則評分</div>
+    <div class="stats-top" data-key="ratingsCountTop">10088個評分</div>
     <div class="stats-big" data-key="ratingValue">4.9</div>
     <div class="stats-bottom stars" data-key="starsText">★★★★★</div>
   </div>
@@ -1101,50 +1105,60 @@
   </div>
 
 <script>
-<script>
-  const INSTALL_URLS = {
-    hk: "/pwa/index.html",
-    my: "/pwa/indexmy.html",
-    kh: "/pwa/indexkh.html"
+  /* ===== 安裝按鈕 + 地區下拉（只新增功能） ===== */
+  const REGION_CONFIG = {
+    hk: { flag: "🇭🇰", name: "香港", url: "/pwa/index.html" },
+    my: { flag: "🇲🇾", name: "馬來西亞", url: "/pwa/indexmy.html" },
+    kh: { flag: "🇰🇭", name: "柬埔寨", url: "/pwa/indexkh.html" }
   };
-
-  let currentCountry = "hk"; // 預設香港
+  let currentRegion = "hk"; // 預設香港
 
   const btn = document.getElementById('install-btn');
-  const countryBtn = document.getElementById('countryBtn');
-  const countryMenu = document.getElementById('countryMenu');
-  const countryFlag = document.getElementById('countryFlag');
+  const regionSelect = document.getElementById('regionSelect');
+  const regionBtn = document.getElementById('regionBtn');
+  const regionFlagEl = document.getElementById('regionFlag');
+  const regionMenu = document.getElementById('regionMenu');
 
-  // 開關選單
-  countryBtn.addEventListener('click', (e)=>{
+  function setRegion(key){
+    if (!REGION_CONFIG[key]) return;
+    currentRegion = key;
+    regionFlagEl.textContent = REGION_CONFIG[key].flag;
+    regionBtn.setAttribute("aria-expanded", "false");
+    regionSelect.classList.remove("open");
+  }
+
+  // 下拉開/關
+  regionBtn.addEventListener('click', (e)=>{
     e.stopPropagation();
-    countryMenu.classList.toggle('show');
+    const open = regionSelect.classList.toggle('open');
+    regionBtn.setAttribute("aria-expanded", open ? "true" : "false");
   });
 
-  // 點選項
-  countryMenu.querySelectorAll('.country-item').forEach(item=>{
-    item.addEventListener('click', ()=>{
-      currentCountry = item.dataset.value;
-      countryFlag.textContent = item.textContent.trim().split(" ")[0]; // 只顯示國旗
-      countryMenu.classList.remove('show');
+  // 選項點擊
+  regionMenu.querySelectorAll('.region-option').forEach(opt=>{
+    opt.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      setRegion(opt.getAttribute('data-region'));
     });
   });
 
   // 點外面關閉
-  document.addEventListener('click', ()=> countryMenu.classList.remove('show'));
+  document.addEventListener('click', ()=>{
+    regionSelect.classList.remove('open');
+    regionBtn.setAttribute("aria-expanded", "false");
+  });
 
-  // 免費安裝（維持你原本：轉圈 + 2 秒後跳）
+  // 安裝按鈕：轉圈 2 秒後依地區跳轉
   btn.addEventListener('click', () => {
     if (btn.classList.contains('loading')) return;
 
     btn.classList.add('loading');
     btn.textContent = "安裝中…";
 
+    const installUrl = REGION_CONFIG[currentRegion].url;
+
     setTimeout(() => {
-      window.location.href = INSTALL_URLS[currentCountry] || INSTALL_URLS.hk;
-    }, 2000);
-  });
-</script>
+      window.location.href = installUrl;
     }, 2000);
   });
 </script>
